@@ -1,15 +1,26 @@
-const express = require('express');
+'use strict';
 
+require('dotenv').config();
+const express = require('express');
 const app = express();
 
-app.get('*', handleRequest);
+const PORT = process.env.PORT || 3000;
 
-function handleRequest(req, res) {
-  console.log(req.query);
-  res.send('ok');
-}
+app.use(express.static('./public'));
 
-app.listen(3000, () => {
-  console.log('It is listening for connections');
+app.get('/hello', (request, response) => {
+  response.status(200).send('Hello');
 });
 
+app.get('/data', (request, response) => {
+  let airplanes = {
+    departure: Date.now(),
+    canFly: true,
+    pilot: 'Well Trained'
+  }
+  response.status(200).json(airplanes);
+});
+
+app.use('*', (request, response) => response.send('Sorry, that route does not exist.'))
+
+app.listen(PORT,() => console.log(`Listening on port ${PORT}`));
